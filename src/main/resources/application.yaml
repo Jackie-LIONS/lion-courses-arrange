@@ -1,0 +1,29 @@
+# 端口号
+server:
+  port: 80
+
+
+# 日志格式
+logging:
+  pattern:
+    console: '%d{HH:mm:ss.SSS} %clr(%-5level) ---  [%-15thread] %cyan(%-50logger{50}):%msg%n'
+
+
+spring:
+  # 数据源
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql:///lion_course?serverTimezone=UTC
+    username: root
+    password: 123456
+
+# 配置Mybatis-plus
+mybatis-plus:
+  global-config:
+    db-config:
+      # 主键生成策略为自增
+      id-type: auto
+  configuration:
+    # 关闭列名自动驼峰命名映射规则
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl # 开启sql日志
