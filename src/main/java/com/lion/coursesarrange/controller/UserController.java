@@ -26,7 +26,6 @@ public class UserController {
 
     @PostMapping("/login")
     public BaseResult<String> login(@RequestBody UserLoginRequest userLoginRequest,HttpServletRequest request){
-//        todo 验证码功能
         // 获取输入的验证码
         HttpSession session = request.getSession();
         String checkCode = (String) session.getAttribute("checkCodeGen");
@@ -38,8 +37,13 @@ public class UserController {
         return BaseResult.ok(token);
     }
 
-    //验证码生成
-    @RequestMapping("/checkCode")
+    /**
+     * 验证码生成
+     * @param request
+     * @param response
+     * @throws IOException
+     */
+    @GetMapping("/checkCode")
     public void checkCode(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         //生成验证码并返回
@@ -53,7 +57,6 @@ public class UserController {
         //输出图片
         ServletOutputStream os = response.getOutputStream();
         CheckCodeUtil.outputImage(100,40,os,checkCodeGen);
-
     }
 
     @PostMapping("/register")
