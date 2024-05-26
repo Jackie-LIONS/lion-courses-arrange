@@ -7,12 +7,6 @@
         <result property="username" column="username"></result>
     </resultMap>
 
-<!--    <select id="findById" resultMap="userResultMap">-->
-<!--        select *-->
-<!--        from user-->
-<!--        where id = #{id}-->
-<!--    </select>-->
-
     <select id="selectByCondition" resultType="com.lion.coursesarrange.model.pojo.User">
         select * from user
         <where>

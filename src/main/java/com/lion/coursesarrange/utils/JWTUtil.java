@@ -3,6 +3,7 @@ package com.lion.coursesarrange.utils;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.lion.coursesarrange.model.enums.CodeEnum;
+import com.lion.coursesarrange.model.pojo.Teacher;
 import com.lion.coursesarrange.model.pojo.User;
 import com.lion.coursesarrange.model.result.BusException;
 
@@ -34,6 +35,21 @@ public class JWTUtil {
         return token;
     }
 
+    /**
+     * 签名生成
+     * @param teacher
+     * @return
+     */
+    public static String signTeacher(Teacher teacher){
+        String token = JWT.create()
+                .withIssuer(ISSUER) // 签发者
+                .withIssuedAt(new Date()) // 签发时间
+                .withExpiresAt(new Date(new Date().getTime() + EXPIRE_DATE)) // 过期时间
+                .withSubject(teacher.getTeacherName()) // 保存用户名
+                .withClaim("userId",teacher.getId())   //保存用户id
+                .sign(Algorithm.HMAC256(SECRET)); // 秘钥
+        return token;
+    }
     /**
      * 签名解析
      * @param token 签名字符串

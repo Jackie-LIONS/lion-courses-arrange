@@ -1,6 +1,5 @@
 package com.lion.coursesarrange.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lion.coursesarrange.mapper.UserMapper;
@@ -9,11 +8,9 @@ import com.lion.coursesarrange.model.pojo.User;
 import com.lion.coursesarrange.model.result.BusException;
 import com.lion.coursesarrange.service.UserService;
 import com.lion.coursesarrange.utils.JWTUtil;
-import org.junit.platform.commons.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -38,6 +35,7 @@ public class UserServiceImpl implements UserService {
         String sign = JWTUtil.sign(user);
         return sign;
     }
+
     @Override
     public void register(User user) {
         if (user == null || user.getPassword() == null){
@@ -65,16 +63,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void update(User user) {
-        userMapper.update(user);
+        userMapper.updateById(user);
     }
 
     @Override
     public User selectById(Integer uid) {
         return userMapper.selectById(uid);
     }
-
-//    @Override
-//    public String deleteById(User user) {
-//        return null;
-//    }
 }
