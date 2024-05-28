@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lion.coursesarrange.mapper.ClassesMapper">
+    <select id="selectByCondition" resultType="com.lion.coursesarrange.model.pojo.Classes">
+        select * from classes
+        <where>
+            <if test="classes.className != null and classes.className != ''">
+                and className like "%" #{classes.className} "%"
+            </if>
+            <if test="classes.size !=null ">
+                and size = #{classes.size}
+            </if>
+        </where>
+    </select>
+
+    <delete id="deleteByIds">
+        delete from classes where id in
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>
