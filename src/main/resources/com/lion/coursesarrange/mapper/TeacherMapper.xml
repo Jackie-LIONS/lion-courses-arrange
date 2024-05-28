@@ -6,7 +6,7 @@
         select * from teacher
         <where>
             <if test="teacher.teacherName != null and teacher.teacherName != ''">
-                and t_name like "%" #{teacher.teacherName} "%"
+                and teacherName like "%" #{teacher.teacherName} "%"
             </if>
             <if test="teacher.id != null and teacher.id != ''">
                 and id = #{teacher.id}
