@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lion.coursesarrange.mapper.ClassesCourseMapper">
+
+    <resultMap id="CclassesResultMap" type="com.lion.coursesarrange.model.pojo.ClassesCourse">
+        <result property="classesCourseName" column="classesCourseName"/>
+        <result property="id" column="id"/>
+        <result property="remark" column="remark"/>
+        <result property="size" column="size"/>
+        <association property="course" column="courseId" >
+            <result property="id" column="id"/>
+            <result property="code" column="code"/>
+            <result property="courseName" column="courseName"/>
+        </association>
+    </resultMap>
+
+    <!--id查询 -->
+    <resultMap id="CclassesResultMap2" type="com.lion.coursesarrange.model.pojo.ClassesCourse">
+        <result property="classesCourseName" column="classesCourseName"/>
+        <result property="id" column="id"/>
+        <result property="remark" column="remark"/>
+        <association property="course" column="courseId" select="com.pxw.mapper.CourseMapper.selectById" />
+    </resultMap>
+
+
+    <select id="selectByCondition" resultMap="CclassesResultMap">
+        select * from classescourse ,course
+        <where>
+            <if test="classesName != null and classesName != ''">
+                and classesCourseName like "%" #{classesCourseName} "%"
+            </if>
+            <if test="course.courseName != null and course.courseName != ''">
+                and courseName like "%" #{course.courseName} "%"
+            </if>
+            and courseId = id
+        </where>
+        order by classesCourseName
+    </select>
+
+    <delete id="deleteByIds">
+        delete from classescourse where id in
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+
+
+</mapper>
