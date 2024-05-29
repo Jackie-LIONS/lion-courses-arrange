@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lion.coursesarrange.mapper.CourseTableMapper">
+
+
+    <resultMap id="TimeslotResultMap" type="com.lion.coursesarrange.model.pojo.Timeslot">
+        <result property="timeId" column="timeId"/>
+        <result property="timeslot" column="timeslot"/>
+    </resultMap>
+
+    <!--复杂属性报错无影响-->
+    <resultMap id="CourseTableResultMap" type="com.lion.coursesarrange.model.pojo.CourseTable">
+        <id property="task.id" column="id"/>
+        <result property="task.startWeek" column="start_week"/>
+        <result property="task.endWeek" column="end_week"/>
+        <result property="task.weekNode" column="week_node"/>
+        <result property="task.teacher.id" column="t_id"/>
+        <result property="task.teacher.teacherName" column="t_name"/>
+        <result property="task.cclasses.id" column="cc_id"/>
+        <result property="task.cclasses.classesName" column="cc_name"/>
+        <result property="task.cclasses.size" column="cc_size"/>
+        <result property="task.cclasses.course.id" column="c_id"/>
+        <result property="task.cclasses.course.courseName" column="c_name"/>
+        <result property="task.cclasses.course.code" column="c_code"/>
+        <result property="room.id" column="r_id"/>
+        <result property="room.roomName" column="r_name"/>
+        <result property="room.capacity" column="capacity"/>
+        <result property="room.remark" column="r_remark"/>
+        <result property="timeslot.id" column="time_id"/>
+        <result property="timeslot.timeslot" column="timeslot"/>
+    </resultMap>
+
+
+    <select id="selectByCondition" resultMap="CourseTableResultMap">
+        select course_table.task_id id,
+        start_week ,end_week ,week_node,
+        teacher.id t_id ,t_name ,
+        task.cc_id,cc_name,cc_size,
+        c_id,c_code,c_name,
+        room.id r_id,r_name,capacity,
+        time_id,timeslot
+        from task, teacher, course, classes_course,course_table,timeslot,room
+        <where>
+            <if test="task.cclasses.classesName != null and task.cclasses.classesName != '' ">
+                and cc_name like "%" #{task.cclasses.classesName} "%"
+            </if>
+            <if test="task.cclasses.course.courseName != null and task.cclasses.course.courseName != '' ">
+                and c_name like "%" #{task.cclasses.course.courseName} "%"
+            </if>
+            <if test="task.teacher.teacherName != null and task.teacher.teacherName != '' ">
+                and t_name like "%" #{task.teacher.teacherName} "%"
+            </if>
+            <if test="task.teacher.id != null and task.teacher.id != '' ">
+                and teacher.id = #{task.teacher.id}
+            </if>
+            <if test="room.roomName != null and room.roomName != '' ">
+                and r_name like "%" #{room.roomName} "%"
+            </if>
+            <if test="timeslot.id !=null and timeslot.id !=''  and timeslot.id !=0 ">
+                and timeslot.time_id = #{timeslot.id}
+            </if>
+            and course_table.task_id = task.id
+            and task.cc_id = classes_course.cc_id
+            and classes_course.course_id = course.c_id
+            and task.teacher_id = teacher.id
+            and course_table.room_id = room.id
+            and course_table.timeslot_id = timeslot.time_id
+        </where>
+
+    </select>
+
+    <select id="selectByCondition2" resultMap="CourseTableResultMap">
+        select course_table.task_id id,
+        start_week ,end_week ,week_node,
+        teacher.id t_id,t_name ,
+        task.cc_id,cc_name,cc_size,
+        c_id,c_code,c_name,
+        room.id r_id,r_name,capacity,
+        time_id,timeslot
+        from task, teacher, course, classes_course,course_table,timeslot,room
+        <where>
+            <if test="ccName != null and ccName != '' ">
+                and cc_name like "%" #{ccName} "%"
+            </if>
+            <if test="teacherId != null and teacherId != '' ">
+                and teacher.id = #{teacherId}
+            </if>
+            <if test="timeId !=null and timeId !='' ">
+                and timeslot.time_id = #{timeId}
+            </if>
+            and course_table.task_id = task.id
+            and task.cc_id = classes_course.cc_id
+            and classes_course.course_id = course.c_id
+            and task.teacher_id = teacher.id
+            and course_table.room_id = room.id
+            and course_table.timeslot_id = timeslot.time_id
+        </where>
+
+    </select>
+
+    <select id="selectEmptyRoom" resultMap="CourseTableResultMap">
+        select
+        room.id r_id,r_name,capacity,room.remark r_remark,
+        time_id,timeslot
+        from room,timeslot
+        where
+        (room.id,time_id) not in (select room_id,timeslot_id from course_table)
+        <if test="timeslot.id !=null and timeslot.id !=''  and timeslot.id !=0 ">
+            and timeslot.time_id = #{timeslot.id}
+        </if>
+        <if test="room.roomName !=null and room.roomName !='' ">
+            and room.r_name like "%" #{room.roomName} "%"
+        </if>
+        <if test="task.cclasses.size !=null and task.cclasses.size !=''  and task.cclasses.size !=0 ">
+            and capacity >= #{task.cclasses.size}
+        </if>
+        order by r_name,time_id
+    </select>
+
+    <select id="selectTable" resultMap="CourseTableResultMap">
+        select course_table.task_id id,
+        start_week ,end_week ,week_node,
+        teacher.id t_id ,t_name ,
+        task.cc_id,cc_name,
+        c_id,c_code,c_name,
+        room.id r_id,r_name,capacity,
+        time_id,timeslot
+        from task, teacher, course, classes_course,course_table,timeslot,room
+        <where>
+            <if test="task.cclasses.classesName != null and task.cclasses.classesName != '' ">
+                and cc_name like "%" #{task.cclasses.classesName} "%"
+            </if>
+            <if test="task.teacher.teacherName != null and task.teacher.teacherName != '' ">
+                and t_name like "%" #{task.teacher.teacherName} "%"
+            </if>
+            <if test="room.roomName != null and room.roomName != '' ">
+                and r_name like "%" #{room.roomName} "%"
+            </if>
+            and course_table.task_id = task.id
+            and task.cc_id = classes_course.cc_id
+            and classes_course.course_id = course.c_id
+            and task.teacher_id = teacher.id
+            and course_table.room_id = room.id
+            and course_table.timeslot_id = timeslot.time_id
+        </where>
+        order by time_id;
+    </select>
+
+    <select id="selectAll" resultMap="CourseTableResultMap">
+        select course_table.task_id id,
+               start_week,
+               end_week,
+               week_node,
+               teacher.id           t_id,
+               t_name,
+               task.cc_id,
+               cc_name,
+               cc_size,
+               c_id,
+               c_code,
+               c_name,
+               room.id              r_id,
+               r_name,
+               capacity,
+               time_id,
+               timeslot
+        from task,
+             teacher,
+             course,
+             classes_course,
+             course_table,
+             timeslot,
+             room
+        where course_table.task_id = task.id
+          and task.cc_id = classes_course.cc_id
+          and classes_course.course_id = course.c_id
+          and task.teacher_id = teacher.id
+          and course_table.room_id = room.id
+          and course_table.timeslot_id = timeslot.time_id
+    </select>
+
+    <select id="selectTask" resultMap="com.pxw.mapper.TaskMapper.TaskResultMap">
+        select task.id id ,start_week ,end_week ,week_node,
+        teacher.id t_id ,t_name ,
+        task.cc_id,cc_name,cc_size,
+        c_id,c_code,c_name
+        from task, teacher, course, classes_course
+        where
+            task.id not in (select task_id from course_table)
+            and task.cc_id = classes_course.cc_id
+            and classes_course.course_id = course.c_id
+            and task.teacher_id = teacher.id
+        <if test="cclasses.classesName != null and cclasses.classesName != '' ">
+            and cc_name like "%" #{cclasses.classesName} "%"
+        </if>
+        <if test="cclasses.course.courseName != null and cclasses.course.courseName != '' ">
+            and c_name like "%" #{cclasses.course.courseName} "%"
+        </if>
+        <if test="teacher.teacherName != null and teacher.teacherName != '' ">
+            and t_name like "%" #{teacher.teacherName} "%"
+        </if>
+        <if test="teacher.id != null and teacher.id != '' ">
+            and teacher.id =  #{teacher.id}
+        </if>
+    </select>
+
+    <delete id="deleteByIds">
+        delete from course_table where task_id in
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteAll">
+        truncate course_table
+    </delete>
+
+    <insert id="addCourseTables">
+        insert into course_table values
+        <foreach collection="tables" separator="," item="table">
+            ( #{table.task.id}, #{table.room.id}, #{table.timeslot.id} )
+        </foreach>
+    </insert>
+
+
+</mapper>

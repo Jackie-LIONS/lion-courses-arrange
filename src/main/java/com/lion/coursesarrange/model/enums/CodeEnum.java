@@ -24,6 +24,8 @@ public enum CodeEnum implements Serializable {
 //    REGISTER_REPEAT_PHONE_ERROR(606,"输入手机号已存在"),
     REGISTER_REPEAT_NAME_ERROR(606,"输入用户名已存在"),
     REQISTER_NULL_ERROR(607,"输入信息为空"),
+    UPDATE_FAIL_ERROR(608,"更新失败"),
+
 //    UPLOAD_FILE_ERROR(604,"文件上传失败"),
 
 
