@@ -175,8 +175,6 @@ public class Bootstrap {
                     break;
                 }
             }
-
-
         }
         return clashes;
 
